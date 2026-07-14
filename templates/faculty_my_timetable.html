@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Teaching Schedule</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">My Teaching Schedule</div>
+        <div class="nav-menu">
+            <a href="{{ url_for('faculty_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="timetable-header">
+            <h1>{{ faculty.name }} - Teaching Schedule</h1>
+            <p>CSE Department | Academic Year 2024-25</p>
+        </div>
+        
+        <div class="timetable-wrapper">
+            <table class="timetable horizontal-view">
+                <thead>
+                    <tr>
+                        <th class="day-column">Day</th>
+                        <th>8:30 AM<br>9:30 AM</th>
+                        <th>9:30 AM<br>10:30 AM</th>
+                        <th class="break-header">Break<br>10:30-10:45</th>
+                        <th>10:45 AM<br>11:45 AM</th>
+                        <th>11:45 AM<br>12:45 PM</th>
+                        <th class="break-header">Lunch<br>12:45-1:30 PM</th>
+                        <th>1:30 PM<br>2:30 PM</th>
+                        <th>2:30 PM<br>3:30 PM</th>
+                        <th>3:30 PM<br>4:30 PM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in days %}
+                        <tr>
+                            <td class="day-column"><strong>{{ day }}</strong></td>
+                            
+                            <!-- 8:30-9:30 -->
+                            <td {% if '08:30-09:30' in lab_merged_slots[day] %}rowspan="1" colspan="2" class="lab-merged-cell"{% endif %}>
+                                {% if timetable[day]['08:30-09:30'] %}
+                                    {% for entry in timetable[day]['08:30-09:30'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                            {% if entry.is_lab %}
+                                                <br><small style="color: #e65100; font-weight: 600;">Lab (8:30 AM - 10:30 AM)</small>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- 9:30-10:30 -->
+                            {% if '08:30-09:30' not in lab_merged_slots[day] %}
+                            <td>
+                                {% if timetable[day]['09:30-10:30'] %}
+                                    {% for entry in timetable[day]['09:30-10:30'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                            
+                            <!-- Break -->
+                            <td class="break-cell">☕</td>
+                            
+                            <!-- 10:45-11:45 -->
+                            <td {% if '10:45-11:45' in lab_merged_slots[day] %}rowspan="1" colspan="2" class="lab-merged-cell"{% endif %}>
+                                {% if timetable[day]['10:45-11:45'] %}
+                                    {% for entry in timetable[day]['10:45-11:45'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                            {% if entry.is_lab %}
+                                                <br><small style="color: #e65100; font-weight: 600;">Lab (10:45 AM - 12:45 PM)</small>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- 11:45-12:45 -->
+                            {% if '10:45-11:45' not in lab_merged_slots[day] %}
+                            <td>
+                                {% if timetable[day]['11:45-12:45'] %}
+                                    {% for entry in timetable[day]['11:45-12:45'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                            
+                            <!-- Lunch -->
+                            <td class="break-cell">🍽️</td>
+                            
+                            <!-- 1:30-2:30 PM -->
+                            <td {% if '13:30-14:30' in lab_merged_slots[day] %}rowspan="1" colspan="2" class="lab-merged-cell"{% endif %}>
+                                {% if timetable[day]['13:30-14:30'] %}
+                                    {% for entry in timetable[day]['13:30-14:30'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                            {% if entry.is_lab %}
+                                                <br><small style="color: #e65100; font-weight: 600;">Lab (1:30 PM - 3:30 PM)</small>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- 2:30-3:30 PM -->
+                            {% if '13:30-14:30' not in lab_merged_slots[day] %}
+                            <td>
+                                {% if timetable[day]['14:30-15:30'] %}
+                                    {% for entry in timetable[day]['14:30-15:30'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                            
+                            <!-- 3:30-4:30 PM -->
+                            <td>
+                                {% if timetable[day]['15:30-16:30'] %}
+                                    {% for entry in timetable[day]['15:30-16:30'] %}
+                                        <div class="class-entry {% if entry.is_lab %}lab-class{% endif %}">
+                                            <strong>{{ entry.subject_name }}</strong>
+                                            <br><span class="batch-tag">{{ entry.section }}</span>
+                                            {% if entry.batch %}
+                                                <span class="batch-tag">{{ entry.batch }}</span>
+                                            {% endif %}
+                                            {% if entry.room and entry.room != 'Classroom' %}
+                                                <br><span class="room-tag">{{ entry.room }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="no-class">Free</div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

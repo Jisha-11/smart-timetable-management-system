@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Timetable System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+    <!-- Full Width Banner -->
+    <div class="login-banner">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="College Logo" class="banner-logo">
+    </div>
+    
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <h2>Timetable Management System</h2>
+                <p>CSE Department | SJBIT</p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Enter your username" autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">LOGIN</button>
+            </form>
+            
+            <div class="login-info">
+                <h4>Sample Credentials:</h4>
+                <p><strong>Admin:</strong> admin / admin123</p>
+                <p><strong>Faculty:</strong> faculty1 / fac123</p>
+                <p><strong>Student:</strong> student1 / stu123</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

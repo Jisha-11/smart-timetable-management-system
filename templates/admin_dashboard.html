@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Timetable System - Admin</div>
+        <div class="nav-menu">
+            <span>Welcome, {{ session.name }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="dashboard-header">
+            <h1>Admin Dashboard</h1>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ stats.faculties }}</h3>
+                <p>Total Faculties</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.subjects }}</h3>
+                <p>Total Subjects</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.pending_feedback }}</h3>
+                <p>Pending Feedback</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Generate Timetables</h2>
+            <p>Select a section to generate timetable or generate for all sections:</p>
+            
+            <div class="button-grid">
+                <a href="{{ url_for('generate_all') }}" class="btn btn-success btn-large">
+                    Generate All Timetables
+                </a>
+            </div>
+            
+            <h3>Generate by Semester:</h3>
+            <div class="section-grid">
+                <div class="semester-box">
+                    <h4>Semester 3</h4>
+                    <a href="{{ url_for('generate_timetable', section='3A') }}" class="btn btn-primary">3A</a>
+                    <a href="{{ url_for('generate_timetable', section='3B') }}" class="btn btn-primary">3B</a>
+                    <a href="{{ url_for('generate_timetable', section='3C') }}" class="btn btn-primary">3C</a>
+                    <a href="{{ url_for('generate_timetable', section='3D') }}" class="btn btn-primary">3D</a>
+                </div>
+                
+                <div class="semester-box">
+                    <h4>Semester 5</h4>
+                    <a href="{{ url_for('generate_timetable', section='5A') }}" class="btn btn-primary">5A</a>
+                    <a href="{{ url_for('generate_timetable', section='5B') }}" class="btn btn-primary">5B</a>
+                    <a href="{{ url_for('generate_timetable', section='5C') }}" class="btn btn-primary">5C</a>
+                </div>
+                
+                <div class="semester-box">
+                    <h4>Semester 7</h4>
+                    <a href="{{ url_for('generate_timetable', section='7A') }}" class="btn btn-primary">7A</a>
+                    <a href="{{ url_for('generate_timetable', section='7B') }}" class="btn btn-primary">7B</a>
+                    <a href="{{ url_for('generate_timetable', section='7C') }}" class="btn btn-primary">7C</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>View Timetables</h2>
+            <div class="section-grid">
+                <div class="semester-box">
+                    <h4>Semester 3</h4>
+                    <a href="{{ url_for('view_timetable', section='3A') }}" class="btn btn-info">View 3A</a>
+                    <a href="{{ url_for('view_timetable', section='3B') }}" class="btn btn-info">View 3B</a>
+                    <a href="{{ url_for('view_timetable', section='3C') }}" class="btn btn-info">View 3C</a>
+                    <a href="{{ url_for('view_timetable', section='3D') }}" class="btn btn-info">View 3D</a>
+                </div>
+                
+                <div class="semester-box">
+                    <h4>Semester 5</h4>
+                    <a href="{{ url_for('view_timetable', section='5A') }}" class="btn btn-info">View 5A</a>
+                    <a href="{{ url_for('view_timetable', section='5B') }}" class="btn btn-info">View 5B</a>
+                    <a href="{{ url_for('view_timetable', section='5C') }}" class="btn btn-info">View 5C</a>
+                </div>
+                
+                <div class="semester-box">
+                    <h4>Semester 7</h4>
+                    <a href="{{ url_for('view_timetable', section='7A') }}" class="btn btn-info">View 7A</a>
+                    <a href="{{ url_for('view_timetable', section='7B') }}" class="btn btn-info">View 7B</a>
+                    <a href="{{ url_for('view_timetable', section='7C') }}" class="btn btn-info">View 7C</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Send Notification</h2>
+            <form method="POST" action="{{ url_for('send_notification') }}" class="notification-form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="target_role">Send To</label>
+                    <select id="target_role" name="target_role">
+                        <option value="all">Everyone</option>
+                        <option value="faculty">Faculty Only</option>
+                        <option value="student">Students Only</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Send Notification</button>
+            </form>
+        </div>
+        
+        <div class="section">
+            <h2>Recent Feedback & Issues</h2>
+            <div class="feedback-list">
+                {% if feedback %}
+                    {% for fb in feedback %}
+                        <div class="feedback-item {% if fb.status == 'resolved' %}resolved{% endif %}">
+                            <div class="feedback-header">
+                                <strong>{{ fb.user_name }}</strong> ({{ fb.role }})
+                                <span class="feedback-type">{{ fb.type }}</span>
+                            </div>
+                            <p>{{ fb.message }}</p>
+                            <div class="feedback-footer">
+                                <small>{{ fb.timestamp }}</small>
+                                {% if fb.status == 'pending' %}
+                                    <a href="{{ url_for('mark_feedback_resolved', feedback_id=fb.id) }}" 
+                                       class="btn btn-sm">Mark Resolved</a>
+                                {% else %}
+                                    <span class="status-resolved">✓ Resolved</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No feedback yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
